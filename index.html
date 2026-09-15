@@ -238,3 +238,115 @@ q:"Quelle ville est la capitale de la province Sud ?",
 a:["Lifou","Nouméa","Koné","Poindimié"],
 c:1
 },
+  ];
+
+let i=0;
+let score=0;
+let locked=false;
+
+function startGame(){
+  i=0;
+  score=0;
+  locked=false;
+
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("game").classList.remove("hidden");
+
+  showQuestion();
+}
+
+function showQuestion(){
+  locked=false;
+
+  let x=questions[i];
+
+  document.getElementById("counter").textContent =
+    "Question "+(i+1)+" / "+questions.length;
+
+  document.getElementById("bar").style.width =
+    (i/questions.length*100)+"%";
+
+  let niveau="";
+
+  if(i<10){
+    niveau="🟢 Niveau 1 — Facile";
+  }else if(i<20){
+    niveau="🟠 Niveau 2 — Intermédiaire";
+  }else{
+    niveau="🔴 Niveau 3 — Expert";
+  }
+
+  document.getElementById("level").textContent=niveau;
+  document.getElementById("question").textContent=x.q;
+  document.getElementById("score").textContent=score;
+
+  const box=document.getElementById("answers");
+  box.innerHTML="";
+
+  x.a.forEach((ans,n)=>{
+    let b=document.createElement("button");
+    b.textContent=ans;
+    b.onclick=()=>answer(n,b);
+    box.appendChild(b);
+  });
+}
+
+function answer(n,b){
+  if(locked)return;
+
+  locked=true;
+
+  let x=questions[i];
+
+  if(n===x.c){
+    score+=10;
+    b.classList.add("good");
+  }else{
+    b.classList.add("bad");
+  }
+
+  document.getElementById("score").textContent=score;
+
+  setTimeout(()=>{
+    i++;
+
+    if(i<questions.length){
+      showQuestion();
+    }else{
+      finish();
+    }
+  },650);
+}
+
+function finish(){
+  document.getElementById("game").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("finalScore").textContent =
+    score+" / 300";
+
+  let message="";
+
+  if(score>=270){
+    message="🔥 Incroyable ! Tu es un véritable expert de la Nouvelle-Calédonie !";
+  }else if(score>=210){
+    message="👏 Excellent ! Tu connais très bien le Caillou !";
+  }else if(score>=150){
+    message="👍 Bien joué ! Tu as de bonnes connaissances !";
+  }else{
+    message="💪 Continue à jouer pour améliorer ton score !";
+  }
+
+  document.getElementById("message").textContent=message;
+}
+
+function showHome(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("home").classList.remove("hidden");
+}
+
+</script>
+
+</body>
+</html>
